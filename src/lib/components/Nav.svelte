@@ -1,5 +1,7 @@
 <script>
-	let isLoggedIn = false;
+	import { page } from '$app/stores';
+	import authStore from '$lib/stores/auth.store';
+
 	let isOpen = false;
 	function toggleMenu() {
 		isOpen = !isOpen;
@@ -23,35 +25,56 @@
 		</button>
 		<div class:show={isOpen} class="collapse navbar-collapse" id="navbarNav">
 			<ul class="navbar-nav">
-				{#if isLoggedIn}
+				{#if $authStore.isLoggedIn}
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="/">Home</a>
+						<a
+							class:active={$page.url.pathname === '/'}
+							class="nav-link"
+							aria-current="page"
+							href="/">Home</a
+						>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/add">Add Book</a>
+						<a class="nav-link" class:active={$page.url.pathname === '/add'} href="/add">Add Book</a
+						>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/profile">Profile</a>
+						<a class="nav-link" class:active={$page.url.pathname === '/profile'} href="/profile"
+							>Profile</a
+						>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/about">About</a>
+						<a class="nav-link" class:active={$page.url.pathname === '/about'} href="/about"
+							>About</a
+						>
 					</li>
 					<li class="nav-item">
 						<span class="nav-link">Logout</span>
 					</li>
 				{:else}
 					<li class="nav-item">
-						<a class="nav-link" aria-current="page" href="/">Home</a>
+						<a
+							class:active={$page.url.pathname === '/'}
+							class="nav-link"
+							aria-current="page"
+							href="/">Home</a
+						>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/about">About</a>
+						<a class:active={$page.url.pathname === '/about'} class="nav-link" href="/about"
+							>About</a
+						>
 					</li>
 
 					<li class="nav-item">
-						<a class="nav-link" href="/login">Login</a>
+						<a class:active={$page.url.pathname === '/login'} class="nav-link" href="/login"
+							>Login</a
+						>
 					</li>
 					<li class="nav-item">
-						<a class="nav-link" href="/signup">Sign Up</a>
+						<a class:active={$page.url.pathname === '/signup'} class="nav-link" href="/signup"
+							>Sign Up</a
+						>
 					</li>
 				{/if}
 			</ul>
@@ -62,5 +85,8 @@
 <style>
 	.nav-item > span {
 		cursor: pointer;
+	}
+	.nav-item > a.active {
+		font-weight: bold;
 	}
 </style>
