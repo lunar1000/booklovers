@@ -36,4 +36,3 @@ if (getApps().length == 0) {
 }
 
 export const db = getFirestore();
-console.log('firebase was initialized');
