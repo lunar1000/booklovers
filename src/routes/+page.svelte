@@ -1,4 +1,17 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
+<script>
+	import { onMount } from 'svelte';
+	import { getAuth } from 'firebase/auth';
+	export let data;
 
-<div class="bg-amber-400">amber</div>
+	onMount(async () => {
+		try {
+			const token = await getAuth().currentUser?.getIdToken(true);
+			console.log(token, 'jwt');
+		} catch (e) {
+			console.log(e);
+		}
+	});
+</script>
+
+<h1>Num of users: {data.count}</h1>
+<div>{data.abc}</div>
