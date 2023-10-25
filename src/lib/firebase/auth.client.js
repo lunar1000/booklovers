@@ -16,6 +16,7 @@ export async function loginWithGoogle() {
 
 export async function logout() {
 	await signOut(getAuth());
+	await fetch('/logout');
 }
 
 export async function registerWithEmailandPassword(email, password) {
@@ -32,4 +33,19 @@ export async function loginWithEmailandPassword(email, password) {
 
 export async function mailResetPasswordEmail(email) {
 	await sendPasswordResetEmail(getAuth(), email);
+}
+
+export async function sendJWToken() {
+	const auth = getAuth();
+	const user = auth.currentUser;
+
+	if (!user) {
+		return;
+	}
+
+	const token = await user.getIdToken(true);
+	await fetch('/token', {
+		method: 'POST',
+		body: JSON.stringify({ token, email: user.email })
+	});
 }

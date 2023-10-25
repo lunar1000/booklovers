@@ -12,7 +12,7 @@
 			const email = formData.get('email');
 			const password = formData.get('password');
 			const user = await loginWithEmailandPassword(email, password);
-			await afterLogin($page.url, user.ud);
+			await afterLogin($page.url, user.uid);
 		} catch (e) {
 			console.log(e.code);
 			if (

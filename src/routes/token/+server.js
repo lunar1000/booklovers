@@ -1,7 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { auth } from '$lib/firebase/firebase.server';
 
-console.log('backend token');
 /** @type {import('./$types').RequestHandler} */
 export async function POST({ request, cookies }) {
 	try {

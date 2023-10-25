@@ -1,3 +1,8 @@
+<script>
+	export let data;
+	console.log(data);
+</script>
+
 <div class="row">
 	<div class="col">
 		<h1>About Booklovers</h1>

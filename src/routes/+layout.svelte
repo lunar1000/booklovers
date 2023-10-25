@@ -3,7 +3,34 @@
 	import Nav from '$lib/components/Nav.svelte';
 	import messagesStore from '$lib/stores/massages.store';
 	import '$lib/firebase/firebase.client';
-
+	import { onMount } from 'svelte';
+	import { sendJWToken } from '$lib/firebase/auth.client';
+	/**
+	 * @type {string | number | NodeJS.Timeout | undefined}
+	 */
+	let timerId;
+	async function sendServerToken() {
+		try {
+			await sendJWToken();
+		} catch (e) {
+			clearInterval(timerId);
+		}
+	}
+	// @ts-ignore
+	onMount(async () => {
+		try {
+			await sendServerToken();
+			timerId = setInterval(async () => {
+				await sendServerToken();
+			}, 600000);
+		} catch (e) {
+			console.log(e);
+			messagesStore.showError();
+		}
+		return () => {
+			clearInterval(timerId);
+		};
+	});
 	function closeMessage() {
 		messagesStore.hide();
 	}
