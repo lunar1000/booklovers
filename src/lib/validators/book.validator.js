@@ -1,6 +1,6 @@
 import yup from 'yup';
 
-export default async function validate(formData) {
+export default async function validate(formData, edit = false) {
 	const schema = yup.object({
 		title: yup.string().required('Book title is required').min(4).max(40), // required의 인수로 default값을 전달할 수 있다
 		author: yup.string().required().min(5).max(200),
@@ -8,10 +8,16 @@ export default async function validate(formData) {
 		description: yup.string().required().min(5).max(4500),
 		small_picture: yup
 			.mixed()
-			.required()
+			.nullable()
+			.test('fileRequired', 'Small Picture required', (value) => {
+				return value !== null || edit;
+			})
 			.test('fileType', 'The file must be an image', (value) => {
 				if (value && value.type) {
-					return ['image/png', 'image/gif', 'image/jpeg', 'image/svg'].includes(value.type);
+					return (
+						['image/png', 'image/gif', 'image/jpeg', 'image/svg'].includes(value.type) ||
+						(edit && value.name == '')
+					);
 				}
 				return true;
 			})
@@ -23,10 +29,23 @@ export default async function validate(formData) {
 			}),
 		main_picture: yup
 			.mixed()
-			.required()
+			.nullable()
+			.test('fileRequired', 'Main Picture required', (value) => {
+				return value !== null || edit;
+			})
 			.test('fileType', 'The file must be an image', (value) => {
 				if (value && value.type) {
-					return ['image/png', 'image/gif', 'image/jpeg', 'image/svg'].includes(value.type);
+					return (
+						[
+							'image/png',
+							'image/gif',
+							'image/jpeg',
+							'image/svg',
+							'image/webp',
+							'image/gif'
+						].includes(value.type) ||
+						(edit && value.name == '')
+					);
 				}
 				return true;
 			})

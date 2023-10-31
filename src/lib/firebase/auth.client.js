@@ -20,7 +20,7 @@ export async function logout() {
 }
 
 export async function registerWithEmailandPassword(email, password) {
-	console.log('here auth.client.js');
+	// console.log('here auth.client.js');
 	const userCredential = await createUserWithEmailAndPassword(getAuth(), email, password);
 	return userCredential.user;
 }

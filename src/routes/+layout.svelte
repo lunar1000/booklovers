@@ -3,8 +3,32 @@
 	import Nav from '$lib/components/Nav.svelte';
 	import messagesStore from '$lib/stores/massages.store';
 	import '$lib/firebase/firebase.client';
-	import { onMount } from 'svelte';
+	import { onDestroy, onMount } from 'svelte';
 	import { sendJWToken } from '$lib/firebase/auth.client';
+	import authStore from '$lib/stores/auth.store.js';
+	import bookNotifyStore from '$lib/stores/book-notify.store.js';
+
+	let notifyBook = false;
+
+	const unsub = bookNotifyStore.subscribe((book) => {
+		if (!$authStore.isLoggedIn) {
+			notifyBook = book;
+			return;
+		}
+		if ($authStore.userId !== book.user_id) {
+			notifyBook = book;
+			return;
+		}
+	});
+	onDestroy(() => {
+		unsub();
+	});
+
+	export let data;
+	let isLoggedIn = data.isLoggedIn;
+
+	$: isLoggedIn = $authStore.isActive ? $authStore.isLoggedIn : data.isLoggedIn;
+
 	/**
 	 * @type {string | number | NodeJS.Timeout | undefined}
 	 */
@@ -34,9 +58,12 @@
 	function closeMessage() {
 		messagesStore.hide();
 	}
+	function closeAlert() {
+		notifyBook = null;
+	}
 </script>
 
-<Nav />
+<Nav {isLoggedIn} />
 <main class="container">
 	{#if $messagesStore.show}
 		<div class="row mt-3">
@@ -55,4 +82,29 @@
 		</div>
 	{/if}
 	<slot />
+	{#if (() => {
+		console.log(notifyBook);
+		return notifyBook;
+	})()}
+		<div
+			class="toast show position-fixed top-0 end-0 m-3"
+			role="alert"
+			aria-live="assertive"
+			aria-atomic="true"
+		>
+			<div class="toast-header">
+				<strong class="me-auto">New Book</strong>
+				<button
+					on:click={closeAlert}
+					type="button"
+					class="btn-close"
+					data-bs-dismiss="toast"
+					aria-label="Close"
+				/>
+			</div>
+			<div class="toast-body">
+				Book <a href={notifyBook.id}>{notifyBook.title}</a> just created!!
+			</div>
+		</div>
+	{/if}
 </main>
